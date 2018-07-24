@@ -1,0 +1,644 @@
+
+\documentclass{article}
+
+\usepackage{times}
+\usepackage{fullpage}
+% \usepackage{mintåed}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{bbding}
+\usepackage{pifont}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{tightenum}
+\usepackage{xspace}
+
+
+\title{New Systems for Preserving Big-data Privacy in Clouds}
+% \date{\today}
+\author{Jianyu Jiang}
+
+\let\vv\texttt
+
+%% Title stuff.
+%\newcommand{\mytitle}[0]{\textbf {Stable Multithreading: \\
+%A New Paradigm for Reliable and Secure Threads}}
+%\newcommand{\mykeywords}[0]{Deterministic Multithreading, Stable 
+%Multithreading, Reliability, Security, Software Model Checking,
+%State Space Reduction, State Machine Replication}
+
+
+
+
+%% Terminology of our own internal techniques.
+\newcommand{\kakute}[0]{\textsc{Kakute}\xspace}
+\newcommand{\confluence}[0]{\textsc{Confluence}\xspace}
+\newcommand{\pig}[0]{\textsc{Pig}\xspace}
+\newcommand{\hadoop}[0]{\textsc{Hadoop}\xspace}
+\newcommand{\maat}[0]{\textsc{Uranus}\xspace}
+\newcommand{\chref}[1]{\S\ref{#1}}
+\newcommand{\lazyp}[0]{Reference Propagation\xspace}
+\newcommand{\tagcache}[0]{Tag Sharing\xspace}
+\newcommand{\func}[1]{\textsc{#1}}
+
+
+% Objective 1
+\newcommand{\appsn}[0]{4\space}
+\newcommand{\appeval}[0]{six\xspace}
+\newcommand{\overheadcomp}[0]{50\%\xspace}
+\newcommand{\overheadmem}[0]{1x\xspace}
+\newcommand{\dagfull}[0]{Directed acyclic graph\space}
+\newcommand{\timelow}[0]{60\%\space}
+\newcommand{\timehigh}[0]{4.5X\space}
+\newcommand{\timeavg}[0]{32.3\%\space}
+
+
+%% Systems and techniques names.
+% \newcommand{\xxx}[0]{\textsc{Gaia}\xspace}
+\newcommand{\paxos}[0]{\textsc{Paxos}\xspace}
+\newcommand{\spaxos}[0]{S-Paxos\xspace}
+\newcommand{\zookeeper}{ZooKeeper\xspace}
+\newcommand{\libpaxos}{libPaxos\xspace}
+\newcommand{\dare}{DARE\xspace}
+\newcommand{\crane}{\textsc{Crane}\xspace}
+\newcommand{\falcon}{\textsc{Apus}\xspace}
+\newcommand{\tripod}{\textsc{Tripod}\xspace}
+\newcommand{\mesos}{\textsc{Mesos}\xspace}
+
+\newcommand{\dmt}[0]{DMT\xspace}
+\newcommand{\smt}[0]{StableMT\xspace}
+\newcommand{\smr}[0]{SMR\xspace}
+\newcommand{\racepro}[0]{\textsc{RacePro}\xspace}
+\newcommand{\tern}[0]{\textsc{Tern}\xspace}
+\newcommand{\peregrine}[0]{\textsc{Peregrine}\xspace}
+\newcommand{\parrot}[0]{\textsc{Parrot}\xspace}
+\newcommand{\grace}[0]{Grace\xspace}
+\newcommand{\coredet}[0]{\textsc{CoreDet}\xspace}
+\newcommand{\kendo}[0]{Kendo\xspace}
+\newcommand{\dthreads}[0]{\textsc{DThreads}\xspace}
+\newcommand{\determinator}[0]{Determinator\xspace}
+\newcommand{\dbug}[0]{\textsc{dbug}\xspace}
+\newcommand{\ecosys}[0]{\parrot-\dbug}
+\newcommand{\ldpreload}[0]{LD\_PRELOAD\xspace}
+
+\newcommand{\mutexlock}[0]{\texttt{pthread\_mutex\_lock}\xspace}
+\newcommand{\send}[0]{\texttt{send}\xspace}
+\newcommand{\accept}[0]{\texttt{accept}\xspace}
+\newcommand{\connect}[0]{\texttt{connect}\xspace}
+\newcommand{\recv}[0]{\texttt{recv}\xspace}
+\newcommand{\sockread}[0]{\texttt{read}\xspace}
+\newcommand{\close}[0]{\texttt{close}\xspace}
+\newcommand{\select}[0]{\texttt{select}\xspace}
+\newcommand{\poll}[0]{\texttt{poll}\xspace}
+\newcommand{\epoll}[0]{\texttt{epoll}\xspace}
+\newcommand{\randfunc}[0]{\texttt{rand}\xspace}
+\newcommand{\srandfunc}[0]{\texttt{srand}\xspace}
+\newcommand{\gettimeofday}[0]{\texttt{gettimeofday}\xspace}
+\newcommand{\us}[0]{\(\mu\text{s}\)\xspace}
+%\newcommand{\N}[0]{$N$\xspace}
+%\newcommand{\M}[0]{$M$\xspace}
+%\newcommand{\C}[0]{$C$\xspace}
+%\newcommand{\timev}[0]{\texttt{T_{v}}\xspace}
+
+%% Application names.
+\newcommand{\azure}{Microsoft Azure\xspace}
+\newcommand{\libsafe}{Libsafe\xspace}
+\newcommand{\apache}{Apache\xspace}
+\newcommand{\clamav}{ClamAV\xspace}
+\newcommand{\ab}{ApacheBench\xspace}
+\newcommand{\mysql}{MySQL\xspace}
+\newcommand{\sysbench}{SysBench\xspace}
+\newcommand{\mplayer}[0]{{MPlayer}\xspace}
+\newcommand{\mencoder}[0]{\v{mencoder}\xspace}
+\newcommand{\pbzip}[0]{\v{PBZip2}\xspace}
+\newcommand{\aget}[0]{\v{aget}\xspace}
+\newcommand{\mongoose}[0]{\v{Mongoose}\xspace}
+\newcommand{\pfscan}[0]{\v{pfscan}\xspace}
+\newcommand{\fft}[0]{\v{fft}\xspace}
+\newcommand{\luc}[0]{\v{lu\_cb}\xspace}
+\newcommand{\lun}[0]{\v{lu\_ncb}\xspace}
+\newcommand{\barnes}[0]{\v{barnes}\xspace}
+\newcommand{\radix}[0]{\v{radix}\xspace}
+\newcommand{\radiosity}[0]{\v{radiosity}\xspace}
+\newcommand{\waters}[0]{\v{water-spatial}\xspace}
+\newcommand{\watern}[0]{\v{water-nsquared}\xspace}
+\newcommand{\oceanncp}[0]{\v{ocean}\xspace}
+\newcommand{\oceancp}[0]{\v{ocean}\xspace}
+\newcommand{\ocean}[0]{\v{ocean}\xspace}
+\newcommand{\fmm}[0]{\v{fmm}\xspace}
+\newcommand{\volrend}[0]{\v{volrend}\xspace}
+\newcommand{\cholesky}[0]{\v{cholesky}\xspace}
+\newcommand{\streamcluster}[0]{\v{streamcluster}\xspace}
+\newcommand{\blackscholes}[0]{\v{blackscholes}\xspace}
+\newcommand{\swaptions}[0]{\v{swaptions}\xspace}
+\newcommand{\bodytrack}[0]{\v{bodytrack}\xspace}
+\newcommand{\bodytrackopenmp}[0]{\v{bodytrack-openmp}\xspace}
+\newcommand{\ferret}[0]{\v{ferret}\xspace}
+\newcommand{\dedup}[0]{\v{dedup}\xspace}
+\newcommand{\raytrace}[0]{\v{raytrace}\xspace}
+\newcommand{\canneal}[0]{\v{canneal}\xspace}
+\newcommand{\racey}[0]{\v{racey}\xspace}
+\newcommand{\freqmine}[0]{\v{freqmine}\xspace}
+\newcommand{\vips}[0]{\v{vips}\xspace}
+\newcommand{\xtwosixfour}[0]{\v{x264}\xspace}
+\newcommand{\fluidanimate}[0]{\v{fluidanimate}\xspace}
+\newcommand{\facesim}[0]{\v{facesim}\xspace}
+\newcommand{\rtviewraytrace}[0]{\v{rtview\_raytrace}\xspace}
+\newcommand{\wordcount}[0]{\v{word\_count}\xspace}
+\newcommand{\klee}[0]{\textsc{klee}\xspace}
+\newcommand{\woodpecker}[0]{\textsc{woodpecker}\xspace}
+\newcommand{\splashx}[0]{\mbox{SPLASH-2x}\xspace}
+\newcommand{\splash}[0]{\mbox{SPLASH-2}\xspace}
+\newcommand{\parsec}[0]{\mbox{PARSEC}\xspace}
+\newcommand{\phoenix}[0]{\mbox{Phoenix}\xspace}
+\newcommand{\pthread}[0]{\mbox{Pthreads}\xspace}
+
+%% Application names (continue).
+\newcommand{\kmeans}[0]{\v{kmeans}\xspace}
+\newcommand{\kmeanspthread}[0]{\v{kmeans-pthread}\xspace}
+\newcommand{\linearregre}[0]{\v{linear-regression}\xspace}
+\newcommand{\linearregrepthread}[0]{\v{linear-regression-pthread}\xspace}
+\newcommand{\matrixmult}[0]{\v{matrix-multiply}\xspace}
+\newcommand{\matrixmultpthread}[0]{\v{matrix-multiply-pthread}\xspace}
+\newcommand{\wordcnt}[0]{\v{word-count}\xspace}
+\newcommand{\wordcntpthread}[0]{\v{word-count-pthread}\xspace}
+\newcommand{\stringmatch}[0]{\v{string-match}\xspace}
+\newcommand{\stringmatchpthread}[0]{\v{string-match-pthread}\xspace}
+\newcommand{\histogram}[0]{\v{histogram}\xspace}
+\newcommand{\histogrampthread}[0]{\v{histogram-pthread}\xspace}
+\newcommand{\pca}[0]{\v{pca}\xspace}
+\newcommand{\pcapthread}[0]{\v{pca-pthread}\xspace}
+
+%% Application names (continue).
+\newcommand{\partition}[0]{\mbox{\v{partition}}\xspace}
+\newcommand{\nthelement}[0]{\mbox{\v{nth\_element}}\xspace}
+\newcommand{\partialsort}[0]{\mbox{\v{partial\_sort}}\xspace}
+\newcommand{\ua}[0]{\v{ua}\xspace}
+\newcommand{\is}[0]{\v{is}\xspace}
+\newcommand{\npb}[0]{\mbox{NPB}\xspace}
+\newcommand{\imagick}[0]{\mbox{ImageMagick}\xspace}
+\newcommand{\openldap}[0]{{OpenLDAP}\xspace}
+\newcommand{\redis}[0]{{Redis}\xspace}
+\newcommand{\memcached}[0]{{Memcached}\xspace}
+\newcommand{\bdb}[0]{{Berkeley DB}\xspace}
+\newcommand{\openmp}[0]{{OpenMP}\xspace}
+\newcommand{\libgomp}[0]{\v{libgomp}\xspace}
+\newcommand{\vtune}[0]{\v{VTune}\xspace}
+
+%% concurrency attack study stats.
+\newcommand{\noldattacks}[0]{46\xspace}
+\newcommand{\nattacks}[0]{23\xspace}
+
+%% imagick programs
+\newcommand{\convertshear}[0]{\v{convert\_shear}\xspace}
+\newcommand{\montage}[0]{\v{montage}\xspace}
+
+\newcommand{\nprog}[0]{108\xspace}
+\newcommand{\nrealprog}[0]{55\xspace}
+\newcommand{\nstl}[0]{33\xspace}
+\newcommand{\nimagick}[0]{14\xspace}
+\newcommand{\nparsec}[0]{15\xspace}
+\newcommand{\nphoenix}[0]{14\xspace}
+\newcommand{\nsplash}[0]{14\xspace}
+\newcommand{\nnpb}[0]{10\xspace}
+\newcommand{\nbenchmarks}[0]{53\xspace}
+\newcommand{\ndatapartition}[0]{86\xspace}
+\newcommand{\nprogadhocsync}[0]{5\xspace}
+\newcommand{\nprogtimeout}[0]{5\xspace}
+
+\newcommand{\nprognohints}[0]{18\xspace}
+\newcommand{\nprogneedhints}[0]{90\xspace}
+\newcommand{\nprognondethints}[0]{9\xspace}
+\newcommand{\nprognondetandnetwork}[0]{11\xspace} % the UA program is excluded.
+\newcommand{\nprognonondethints}[0]{99\xspace}
+\newcommand{\nproglineuphints}[0]{81\xspace}
+\newcommand{\nproggenericlineuphints}[0]{43\xspace}
+\newcommand{\nprogspecificlineuphints}[0]{38\xspace}
+\newcommand{\nlineofhints}[0]{109\xspace}
+\newcommand{\nlineofcomputehints}[0]{87\xspace}
+\newcommand{\nlineofnondethints}[0]{22\xspace}
+\newcommand{\hintsperprog}[0]{1.2\xspace}
+\newcommand{\nlineupfails}[0]{12\xspace}
+
+%% effects of perfomance hints.
+\newcommand{\genericnolineup}[0]{500\%\xspace}
+\newcommand{\genericlineup}[0]{0.8\%\xspace}
+\newcommand{\specificnolineup}[0]{460\%\xspace}
+\newcommand{\specificlineup}[0]{19.1\%\xspace}
+\newcommand{\nondetnohints}[0]{830\%\xspace}
+\newcommand{\nondethints}[0]{42.1\%\xspace}
+\newcommand{\overallnohints}[0]{510\%\xspace}
+\newcommand{\overallhints}[0]{11.9\%\xspace}
+
+%% our geometric mean overhead on standard workload.
+\newcommand{\meanoverhead}[0]{12.7\%\xspace}
+\newcommand{\meanrealoverhead}[0]{6.9\%\xspace}
+\newcommand{\meanbenchoverhead}[0]{19.0\%\xspace}
+
+%% model checking reduction.
+%% nprogshrink, totally 56: 50 programs with out nondet hints, and 6 programs with network or nondet hints.
+\newcommand{\shrinkscale}[0]{$10^{6}$--$10^{19734}$\xspace}
+\newcommand{\nprogshrink}[0]{56\xspace}
+\newcommand{\nprognondetshrink}[0]{5\xspace}
+\newcommand{\nprogverifiedxxx}[0]{99\xspace}
+\newcommand{\nprogverifieddbug}[0]{43\xspace}
+
+%% overheads in comparison table.
+\newcommand{\nprogcompared}[0]{25\xspace}
+\newcommand{\xxxcompoverhead}[0]{11.8\%\xspace}
+\newcommand{\dthreadssyncoverhead}[0]{150.0\%\xspace}
+\newcommand{\dthreadssyncoverheadnoflui}[0]{112.5\%\xspace}
+%\newcommand{\dthreadsoverhead}[0]{1,173\%\xspace}
+\newcommand{\dthreadsexampleoverhead}[0]{7.7$\times$\xspace}
+\newcommand{\coredetoverhead}[0]{115.1\%\xspace}
+\newcommand{\overeach}[0]{10$\times$\xspace}
+\newcommand{\overcombined}[0]{4$\times$\xspace}
+
+% Stats
+\newcommand{\fasterDARElow}[0]{7.9\%\xspace}
+\newcommand{\fasterDARE}[0]{3.3X\xspace}
+\newcommand{\xxxlatencythree}[0]{8.2\xspace}
+\newcommand{\xxxlatencyonezerofive}[0]{31.6\xspace}
+
+\newcommand{\comptradlow}[0]{32.3X\xspace} % TBD
+\newcommand{\comptradhigh}[0]{85.8X\xspace} % TBD
+
+\newcommand{\tradlatencyincreaselow}[0]{30.3\%\xspace} % TBD
+\newcommand{\tradlatencyincreasehigh}[0]{156.8\%\xspace} % TBD
+\newcommand{\systemcostlow}[0]{36.5\%\xspace} % TBD
+\newcommand{\systemcosthigh}[0]{63.7\%\xspace} % TBD
+\newcommand{\xxxscalability}[0]{3.8x\xspace} % TBD
+\newcommand{\darescalability}[0]{11.7x\xspace} % TBD
+
+% Tripod result.
+\newcommand{\tputoverhead}[0]{3.22\%\xspace}
+\newcommand{\latencyoverhead}[0]{3.31\%\xspace}
+
+\newcommand{\eg}{{e.g.}}
+\newcommand{\ie}{{i.e.}}
+\newcommand{\etc}{{etc}}
+\newcommand{\para}[1]{\vspace{.00in}\noindent{\bf #1}}
+\newcommand{\wrt}{{w.r.t. }}
+\newcommand{\cf}{{cf. }}
+\newcommand{\vs}{{vs.}\xspace}
+
+% Architecture of this proposal
+% the level of verification
+% 1. verification of SGX
+% 2. verification of runtime (uranus)
+% 3. verification of program
+
+% the verification target
+% 1. functional correctness (spec <- state machine spec)
+% 2. security properties: 
+%    1) type-safety
+%    2) confidentiality
+%    3) integrity
+%    4) rop (memory safety)
+
+%    5) integrity
+%    6) confidentiality
+%    7) secure measurement
+
+%    8) termination?
+%    9) error-crash?
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+% secured-critical systems are important
+In this big-data era, many business vendors (e.g., Uber) store data on clouds.
+Meanwhile, business vendors and third-parties implement self-defined queries
+(e.g., MapReduce) to process data, causing two severe privacy problems. First,
+third-parties can easily leak sensitive fields in data records (e.g., credit
+cards in Uber orders) through query results. Second, careless or malicious cloud
+providers (e.g., Amazon) can observe the data being queried.
+
+First, to confine malicious third-parties, we has built Kakute, the first Data
+Flow Tracking (DFT) system for big-data. Kakute provides easy-to-use APIs for
+business vendors to tag sensitive data fields, it then automatically tracks
+unmodified queries and prevents sensitive data flowing to query results. A
+challenge in existing DFT systems is that propagating tags in data-intensive
+computations is too slow (e.g., a notable DFT system incurs 128X performance
+overhead compared to native, insecure queries). By leveraging subtle efficiency
+features of big-data queries, we have created two fast tag propagation
+techniques. Our Kakute prototype~\cite{kakute:acsac17} incurs
+merely 32.3\% performance overhead.
+
+Second, to confine malicious cloud providers, we will leverage the Intel SGX
+(Software Guard Extensions) hardware to build the first privacy-preserving
+compiler for unmodified big-data queries. Existing SGX-based systems for
+big-data have two major challenges: they have to rewrite the queries from Java
+to SGX-compatible C++, or their trusted components running in SGX are too large
+(e.g., an entire JVM). To tackle these challenges, our compiler runs only the
+Java big-data queries in SGX using a thin, verified just-in-time translator
+created by us. The compiler also carries our new efficient SGX-based runtime
+techniques.
+
+The success of my research will effectively preserve big-data privacy in
+clouds and benefit most people.
+
+
+% approach of building secured-critical system
+
+% trusted hardware
+\section{Objective}
+\subsection{Data Flow Tracking (DFT) system for private clouds (Finished Work)} 
+We will create Kakute, a fast DFT system that can track and prevent sensitive data
+leakage in self-defined big-data queries. We will make Kakute support diverse
+big-data queries on large, popular datasets, and we will make Kakute incur
+reasonable performance overhead compared to native, insecure queries.
+
+\subsection{Compiler for big-data privacy in public clouds (Future Work)} 
+Our compiler will support unmodified big-data frameworks by creating a thin,
+verified translator that automatically translates Java bytecode to
+SGX-compatible code. We will quantitatively evaluate the performance overhead of
+our compiler and whether it can protect data privacy against real-world
+privileged attacks.
+
+\section{Related Work}
+\subsection{Big-data computing frameworks} 
+\label{sec:bigdata}\vspace{-.075in}
+
+Big-data frameworks (\eg, Spark~\cite{nsdi12:spark} and 
+MapReduce~\cite{hadoop}) are popular for computations on tremendous amounts 
+of data records. These frameworks provide self-defined Java functions (\eg, 
+\vv{map}/\vv{reduce}) to let computation providers write their algorithms, 
+and the frameworks automatically apply these functions on the data stored 
+across computers in parallel.
+
+To avoid excessive computation, big-data frameworks adopt a \emph{lazy 
+transformation} approach~\cite{pig:vldb08,nsdi12:spark}. Spark 
+often uses lazy transformations (\eg, \vv{map}), and calls to 
+these transformations only create a data structure called \func{RDD} with 
+\emph{lineage} (the sequence of transformations on data records).
+Actual transformations are only triggered when materialization 
+operations (\eg, \vv{collect}/\vv{count}) are called. Collecting 
+operations trigger transformations only along lineages, so unnecessary 
+computations are avoided. \textbf{Objective 1} will leverage lazy 
+transformation to create a fast data flow tracking technique: \lazyp 
+(\S\ref{sec:obj1}).
+
+\subsection{Software-based privacy techniques}
+\label{sec:dft}\vspace{-.075in}
+
+Data Flow Tracking (DFT) is a powerful mandatory access control technique for 
+preventing sensitive data leakage~\cite{taintdroid:osdi10}. DFT attaches 
+a tag to a variable (or object), and this tag will propagate during 
+computations on the variable at runtime. DFT is used in various areas, 
+including preventing sensitive data (\eg contacts) leakage in smart phones 
+(TaintDroid~\cite{taintdroid:osdi10}), web services~\cite{cloudfence:raid13}, 
+and server programs~\cite{libdft:vee12}. No DFT system exists for big-data 
+computing, so \textbf{Objective 1} (\chref{sec:obj1}) will create the 
+first DFT system for big-data.
+
+\subsection{Hardware-based privacy techniques}
+\label{sec:sgx}\vspace{-.075in}
+
+Trusted Execution Environment (TEE) is a promising technique for
+protecting computation in a public cloud even if the cloud's operating systems 
+and hypervisors compromise. For instance, Intel-SGX~\cite{intel-sgx}, a 
+popular commercial TEE product, runs a program in a hardware-protected 
+\emph{enclave}, so code and data are protected from outside. Compared with the 
+Homomophic Encryption approach of computing on encrypted data, TEE is much
+faster. For instance, a SGX-based system Opaque~\cite{opaque:nsdi17} 
+incurs a moderate performance overhead of 30\% compared to native, insecure 
+big-data queries.
+
+However, to practically run Java big-data queries with SGX, there are still two
+major challenges. First, existing SGX-based systems~\cite{opaque:nsdi17} require
+computation providers to manually rewrite the readily pervasive Java queries
+into SGX-compatible C++, a time-consuming and error-prone process. Second,
+existing SGX-based systems for big-data have too large Trusted Computing Base
+(TCB). Existing systems (\eg, SGX-BigMatrix~\cite{bigmatrix:ccs17}) run a whole
+language interpreter (\eg, JVM and Python runtime) in enclaves, causing a too
+large (and too dangerous) TCB: JVM code comes from many different
+parties/vendors and extremely hard to verified. \textbf{Objective 2}
+(\chref{sec:obj2}) tackles these two challenges by building a new just-in-time
+compiler.
+
+\section{Research Methodology}
+\subsection{Objective 1: 
+preventing big-data computation leakage with \kakute}\label{sec:obj1}
+\vspace{-.075in}
+
+Although DFT is a powerful access control technique, existing DFT systems incur 
+high performance overhead, especially for data-intensive computations. For 
+instance, we ran a recent DFT system Phosphor~\cite{oo14:phosphor} in Spark 
+with a WordCount algorithm on a small dataset of merely 200MB, and we observed 
+128X longer computation time compared with the native Spark 
+execution~\cite{kakute:acsac17}. The second challenge is completeness: 
+big-data frameworks usually contain \emph{shuffle} operations, which 
+redistribute data and results across computers. However, most existing DFT 
+systems ignore data flows across computers. For the 
+few~\cite{cloudfence:raid13} who support cross-host data flows, transferring 
+all tags in shuffles consumes excessive network bandwidth.
+
+\subsubsection{\kakute: a fast, precise DFT system for big-data} 
+\label{sec:kakute}\vspace{-.075in}
+
+\kakute{} is the first precise and complete DFT system for big-data 
+frameworks. The key insight to address the DFT performance challenge is that 
+multiple fields of a record often have the same tags with the same sensitivity 
+level. For example, in a Taobao order record $\langle$\vv{time}, 
+\vv{userId}, \vv{productID}$\rangle$, only the \vv{userId} field is 
+sensitive, while the other fields are insensitive and they can share the same 
+tag. Leveraging this insight, we present two new techniques, \lazyp and 
+\tagcache. \lazyp avoids unnecessary tag combinations by only keeping the 
+\textit{lineage of tags} in the same self-defined queries, while \tagcache 
+reduces memory usage by sharing tags among multiple fields in each record. To 
+tackle the completeness challenge, \kakute completely captures inter-computer 
+data flows (shuffles), and it efficiently reduces the amount of 
+transferred DFT tags using \tagcache. Both techniques are illustrated in 
+Appendix (c) of this proposal.
+
+Figure~\ref{fig:falcon-protocol} shows \kakute's design. The 
+InputTainter component provides easy-to-use APIs for data providers to 
+automatically tag sensitive fields. The DFT component is enabled in 
+self-defined functions. The Local- and Global-Checker detect and 
+prevent illegal flows of sensitive fields (\eg, credit cards flow to IO 
+functions in self-defined functions). Shuffle operations across computers are 
+intercepted and tags are added. Therefore, DFT is completely captured across 
+computers.
+
+We have implemented \kakute and integrated it with Spark. We leverage 
+Phosphor~\cite{oo14:phosphor}, an efficient DFT system working in the Java 
+byte-code level. \kakute instruments computations of a Spark worker process
+to capture data flows inside self-defined-functions. \kakute provides different 
+granularities of tracking with two types of tags: \func{Integer}
+and \func{Object} tags. \func{Integer} provides 32 distinct tags for 
+identifying 32 sensitivity levels, suitable for detecting data leakage and 
+performance bugs. \func{Object} provides an arbitrary number of tags, which is 
+suitable for data provenance and programming debugging.
+% \kakute provides a 
+% unified API to tackle diverse problems.
+% Based on this unified API, we 
+% will implement 4 built-in checkers for \appsn security and reliability 
+% problems: sensitive information leakage, data provenance, programming and 
+% performance bugs. 
+
+\kakute (\textbf{Objective 1}) strictly prevents
+sensitive data flowing to IO functions or query results, but in some scenarios 
+it is still desirable to let computation providers acquire aggregation 
+results (\eg, the sum of citizens who have got cancer in a country) 
+on sensitive fields as long as individual information is not leaked. 
+Differential privacy~\cite{Dwork2006Differential} can enforce statistical 
+bounds on 
+aggregation results and prevent individual information leakage, so it is 
+complementary to DFT and has attracted much attention recently.
+
+% Differential privacy is a robust privacy standard proposed by Dwork et
+% al.
+% His work shows that differential privacy can be achieved by adding
+% Laplace distributed noise whose scale is related to the sensitivity of queries.
+% This simple algorithm can handle all kinds of queries but inevitably has some
+% drawbacks. For instance, the number of query is limited and too much noise will
+% be injected to continuous queries. To reduce noise magnitude, a 
+% sample-and-aggregation
+% framework~\cite{differentialdp:stoc11} is proposed.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.40\textwidth}
+        \vspace{-.1in}
+        \includegraphics[width=0.95\textwidth]{figures/kakute_arch.pdf}
+         \vspace{-.4in}
+        \caption{\kakute architecture. \kakute's key components are shaded 
+(and in blue).}
+        \label{fig:falcon-protocol}
+   \end{minipage}
+    \hspace{.1in}
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \vspace{-.1in}
+       \includegraphics[width=0.95\textwidth]{figures/uranus_arch.pdf}
+        \vspace{-.1in}
+       \caption{\maat Uranus's Architecture.}
+       \label{fig:maat-arch}
+    \end{minipage}
+\end{figure}
+
+\subsection{Objective 2: creating a privacy-preserving compiler 
+for big-data queries in public clouds}\label{sec:obj2}\vspace{-.075in}
+
+% In order to reduce maintainance costs, more and more sensitive data are stored 
+% and processed in public clouds (\eg, Amazon EC2 and Dropbox). Although data can 
+% be securely encrypted while in rest, recent real-world privacy breaches have 
+% shown that data are often leaked while being processed. The reason is that 
+% homomophic encryption is still pre-mature (a notable analytic database 
+% CryptoDB~\cite{cryptdb:sosp11} reports a 1000X overhead compared with
+% the unencrypted execution), and most data is being processed in plaintext. 
+
+Recent real-world privacy breaches have shown that sensitive data are often 
+leaked while being processed in public clouds, including clouds 
+compromises on external attacks~\cite{icloud-breach} and 
+insider attacks~\cite{top-threats}. Trusted Execution Environment 
+(TEE) is a promising technique to protect computation on public clouds even if 
+the cloud's operating system is compromised. For example, 
+Intel-SGX~\cite{intel-sgx} runs programs in an enclave, so code and data are 
+protected and cannot be seen by the attackers. Meanwhile, SGX is good fit for 
+big-data queries because these queries are data-intensive in userspace and they 
+hardly invoke system calls (OS kernel can easily break SGX's security on 
+memory). A latest big-data analytic system Opaque~\cite{opaque:nsdi17} reports 
+only 30\% overhead compared to native, insecure executions.
+
+Despite recent SGX-based systems (Opaque~\cite{opaque:nsdi17}, 
+VC3~\cite{vc3:sp15}, Azure/Coco~\cite{azure:coco}, and 
+SGX-BigMatrix~\cite{bigmatrix:ccs17}) for big-data are promising, two major 
+challenges remain. First, these systems require completely rewriting the 
+readily pervasive and familiar Java big-data queries 
+into C++~\cite{opaque:nsdi17,vc3:sp15,azure:coco}, a time-consuming and 
+error-prone process. Second, to easy implementation, existing systems often 
+run an entire language runtime (\eg, JVM or Python 
+runtime~\cite{bigmatrix:ccs17}) within SGX, causing the Trusted Computing Base 
+(TCB) to be too large (\eg, JVM has millions of lines of code 
+from many companies and is vulnerable to insider attacks~\cite{top-threats}).
+% SGX-BigMatrix~\cite{bigmatrix:ccs17} proposes a secure and oblivious 
+% vectorization
+% abstraction for Python, but it needs to rewrite programs with its abstraction.
+
+\vspace{-.15in}
+\subsubsection{\maat: a privacy-preserving Java interpreter 
+for big-data queries} 
+\label{sec:ift-problem}\vspace{-.075in}
+
+\maat will be the first interpreter that runs unmodified Java big-data
+queries in SGX enclaves securely with minimal TCB (\ie, the TCB contains only
+SGX and self-defined code itself). \maat works as a Java JIT interpreter which
+automatically executes self-defined big-data functions (\eg,
+\vv{map}/\vv{reduce}) into SGX enclaves. 
+
+The goal of \maat is to preserve the confidentiality of data while being 
+processed in public clouds. Other attacks such as changing execution paths 
+(\ie, integrity) have been well defended in prior work~\cite{jitguard:ccs17}, 
+and \maat can directly use it.
+
+In \maat, SGX,
+computation providers are trusted, but cloud providers are malicious. Figure 
+\ref{fig:maat-arch} shows the architecture of \maat. In \maat, both the 
+translation of self-defined code and the execution of the code are protected by 
+enclaves, so that even if the cloud's OS compromised, it cannot see the 
+executions of big-data queries or inject malicious code into the queries during 
+\maat's translation. Translated functions are put in \maat's code cache for 
+future reuse.
+% Self-defined functions and data processed by these 
+% functions are protected by \maat . The Java byte-codes of these functions are 
+% compiled to enclave-comptabile assembly code.
+
+Two \maat software components run in SGX: the \maat interpreter and our own
+management library. The interpreter is a thin layer which executes a Java
+bytecode instructions in enclaves. The memory management library is for our own
+use of encryption/decryption on data records and maintaining SGX memory for the
+queries at runtime. We will proactively implement these two components to be
+easy to verify (use as few as function recursive calls and loops) as in other
+verification practice~\cite{xi:sosp17}, and we plan to use state-of-the-art
+verification techniques~\cite{xi:sosp17} to verify both of them. Then, we do not
+need to include them in \maat's TCB, greatly reducing its TCB.
+% Specifically, we plan to implement the two 
+% components .
+
+
+% We don't plan to use OpenJDK as our management library 
+% because it contains up to millions lines of code, which is impractical for 
+% formal verifications as it is time-consuming with current verification methods 
+% (\chref{sec:others-work}).
+
+One subtle performance challenge for \maat is that it should have reasonable 
+performance overhead compared to native executions. When calling into and 
+out of a function in enclaves, an ECALL and OCALL will be invoked in the CPU 
+and enclave transitions are invoked. Such transitions are several hundred 
+times slower than user function calls. Moreover, encryption and decryption on 
+data records are invoked during such transitions. Our study on a SGX-based 
+big-data system Opaque~\cite{opaque:nsdi17} shows that it incurs 3.4k enclave
+transitions for processing only 10k data (with two queries \vv{select} and 
+\vv{groupBy}), which confirms the challenge.
+
+To mitigate this challenge, we will create a new enclave runtime abstraction 
+called Data-locality-aware Asynchronous Enclave calls (DAE). DAE converts the 
+synchronous enclave calls (similar to Java function calls) to asynchronous, 
+data-locality-aware calls into enclaves. Specifically, DAE will run a number of 
+$n$ processes ($E_{1}$ to $E_{n}$) in an enclave on each computer. When a 
+JVM process $P$ calls a big-data query function, the call and its parameters 
+are appended to a queue to DAE, and DAE arranges a process $E_{i}$ with good 
+data locality (\eg, according to prior arrangements and the decrypted data 
+held by $E_{i}$) to execute the call. The call result is appended to a return 
+queue of the DAE for process $P$. We expect that DAE will achieve reasonable 
+performance, data locality, and parallelism.
+
+By realizing a privacy-preserving Java JIT compiler for public clouds, \maat has
+broad applications in other security areas. First, we will augment the
+interpreter to automatically executes the big-data queries with dangerous access
+patterns on particular data into those without (\eg, oblivious
+executions~\cite{bigmatrix:ccs17}). Second, we will further enhance DAE to
+support well isolated, secured operating system calls (\eg, library operating
+system calls~\cite{graphene:atc17}), so that \maat will not only benefit
+big-data queries, but other distributed computing paradigms (\eg, graph
+queries~\cite{sigmod10:pregel}).
+
+
+\bibliography{bib/biblio.bib}
+\bibliographystyle{abbrv} 
+
+\end{document}

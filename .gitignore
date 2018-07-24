@@ -1,0 +1,12 @@
+*.pdf
+*.ppy
+*.bbl
+*.log
+*.aux
+*.blg
+*.gz
+.*
+paper.*
+!/paper.tex
+!/.gitignore
+_minted-paper
